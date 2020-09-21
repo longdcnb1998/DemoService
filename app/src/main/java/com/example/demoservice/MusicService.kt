@@ -8,7 +8,7 @@ import android.os.IBinder
 
 class MusicService : Service(), MediaPlayer.OnCompletionListener {
 
-    private var songs: ArrayList<MySong> = mutableListOf<MySong>() as ArrayList<MySong>
+    private var songs = mutableListOf<MySong>()
     private var mediaPlayer: MediaPlayer? = null
     private var iBinder: IBinder? = null
     private var currentState: Int? = null
@@ -80,37 +80,26 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun initData() {
-        songs = ArrayList<MySong>()
-
-        val song1 = MySong("Chuyện rằng", R.raw.chuyen_rang)
-        val song2 = MySong("Lỗi ở yêu thương", R.raw.loi_o_yeu_thuong)
-        val song3 = MySong("Chờ đợi có đáng sợ", R.raw.cho_doi_co_dang_so)
-        val song4 = MySong("Đi cùng em", R.raw.the_layzy_song)
-        val song5 = MySong("Tinh Thoi Xot Xa", R.raw.tinh_thoi_xot_xa)
-        val song6 = MySong("Tuyet Roi Mua He", R.raw.tuyet_roi_mua_he)
-
-        songs.add(song1)
-        songs.add(song2)
-        songs.add(song3)
-        songs.add(song4)
-        songs.add(song5)
-        songs.add(song6)
+        songs.add(MySong("Chuyện rằng", R.raw.chuyen_rang))
+        songs.add(MySong("Lỗi ở yêu thương", R.raw.loi_o_yeu_thuong))
+        songs.add(MySong("Chờ đợi có đáng sợ", R.raw.cho_doi_co_dang_so))
+        songs.add(MySong("Đi cùng em", R.raw.the_layzy_song))
+        songs.add(MySong("Tình thôi xót xa", R.raw.tinh_thoi_xot_xa))
+        songs.add(MySong("Tuyết rơi mùa hè", R.raw.tuyet_roi_mua_he))
     }
 
     override fun onBind(intent: Intent?): IBinder? = iBinder
 
-    inner class MusicBinder : Binder() {
-        fun getService(): MusicService = this@MusicService
+    override fun onCompletion(mp: MediaPlayer?) {
+        nextSong()
     }
 
     override fun onDestroy() {
-        if (mediaPlayer != null) {
-            mediaPlayer!!.release()
-        }
+        mediaPlayer?.release()
         super.onDestroy()
     }
 
-    override fun onCompletion(mp: MediaPlayer?) {
-        nextSong()
+    inner class MusicBinder : Binder() {
+        fun getService(): MusicService = this@MusicService
     }
 }
